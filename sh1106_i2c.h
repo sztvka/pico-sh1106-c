@@ -4,6 +4,8 @@
 
 #ifndef PI_PICO_SH1106_SH1106_I2C_H
 #define PI_PICO_SH1106_SH1106_I2C_H
+
+
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "pico/malloc.h"
@@ -28,8 +30,12 @@ typedef struct sh1106 {
 } sh1106_t;
 void SH1106_Write_Data(sh1106_t *sh1106, uint8_t* data);
 void SH1106_Write_CMD(sh1106_t *sh1106, uint8_t command);
-void SH1106_Init(sh1106_t *sh1106, i2c_inst_t *i2c, uint8_t address, uint8_t width, uint8_t height);
+void SH1106_init(sh1106_t *sh1106, i2c_inst_t *i2c, uint8_t address, uint8_t width, uint8_t height);
 void SH1106_draw(sh1106_t *sh1106);
 void SH1106_drawPixel(sh1106_t *sh1106, uint8_t x, uint8_t y, uint8_t color);
+void SH1106_draw_hline(sh1106_t *sh1106, uint8_t x, uint8_t y, uint8_t w, uint8_t color);
 void SH1106_clear(sh1106_t *sh1106);
+void SH1106_drawRectangle(sh1106_t *sh1106, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color);
+
+
 #endif //PI_PICO_SH1106_SH1106_I2C_H

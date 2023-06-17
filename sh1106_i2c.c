@@ -4,9 +4,23 @@
 
 
 #include "sh1106_i2c.h"
+#include "font.h"
 uint8_t pageBuffer[8][128];
+const uint8_t bytes_per_char = 16 * (9 / 8 + ((9 % 8) ? 1 : 0));
 
-void SH1106_Init(sh1106_t *sh1106, i2c_inst_t *i2c, uint8_t address, uint8_t width, uint8_t height) {
+
+inline static void swap(uint8_t *a, uint8_t *b) {
+    uint8_t *t=a;
+    *a=*b;
+    *b=*t;
+};
+
+int getOffset(char c){
+// offset = (ascii_code(character) - ascii_code(' ')) * bytes_per_char
+    return (int)(((int)c - 32) * bytes_per_char);
+};
+
+void SH1106_init(sh1106_t *sh1106, i2c_inst_t *i2c, uint8_t address, uint8_t width, uint8_t height) {
     sh1106->address = address;
     sh1106->width = width;
     sh1106->height = height;
@@ -57,7 +71,21 @@ void SH1106_drawPixel(sh1106_t *sh1106, uint8_t x, uint8_t y, uint8_t color){
     }else{
         pageBuffer[y/8][x] |= (1 << (y % 8));
     }
+
 }
+
+void SH1106_draw_hline(sh1106_t *sh1106, uint8_t x, uint8_t y, uint8_t w, uint8_t color){
+    if(x > sh1106->width || y > sh1106->height){
+        return;
+    }
+    if((x + w) > sh1106->width){
+        w = sh1106->width - x;
+    }
+    for(uint8_t i = 0; i < w; i++){
+        SH1106_drawPixel(sh1106, x + i, y, color);
+    }
+};
+
 
 void SH1106_clear(sh1106_t *sh1106){
     for(uint8_t i = 0; i < 8; i++){ //dark screen
@@ -66,4 +94,12 @@ void SH1106_clear(sh1106_t *sh1106){
         }
     }
     SH1106_draw(sh1106);
-}
+};
+
+
+void SH1106_drawRectangle(sh1106_t *sh1106, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) {
+    for(uint8_t i=0; i<width; ++i)
+        for(uint8_t j=0; j<height; ++j)
+            SH1106_drawPixel(sh1106, x+i, y+j, color);
+
+};

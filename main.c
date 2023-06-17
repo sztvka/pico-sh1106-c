@@ -1,4 +1,3 @@
-#include "pico/stdlib.h"
 #include "sh1106_i2c.h"
 
 
@@ -16,8 +15,8 @@ int main() {
     stdio_init_all();
     setup_i2c();
     sh1106_t mydisp;
-    SH1106_Init(&mydisp, i2c1, 0x3C, 128, 64);
-    SH1106_drawPixel(&mydisp, 0, 0, 1);
+    SH1106_init(&mydisp, i2c1, 0x3C, 128, 64);
+    SH1106_drawRectangle(&mydisp, 15, 15, 30, 30, 1);
     SH1106_draw(&mydisp);
 
 
