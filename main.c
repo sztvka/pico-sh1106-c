@@ -1,4 +1,6 @@
 #include "sh1106_i2c.h"
+#include "consolas.h"
+
 
 
 void setup_i2c(){
@@ -16,7 +18,7 @@ int main() {
     setup_i2c();
     sh1106_t mydisp;
     SH1106_init(&mydisp, i2c1, 0x3C, 128, 64);
-    SH1106_drawRectangle(&mydisp, 15, 15, 30, 30, 1);
+    SH1106_drawString(&mydisp, "Hello World!", 0, 0, 1, consolas);
     SH1106_draw(&mydisp);
 
 

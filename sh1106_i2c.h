@@ -36,6 +36,6 @@ void SH1106_drawPixel(sh1106_t *sh1106, uint8_t x, uint8_t y, uint8_t color);
 void SH1106_draw_hline(sh1106_t *sh1106, uint8_t x, uint8_t y, uint8_t w, uint8_t color);
 void SH1106_clear(sh1106_t *sh1106);
 void SH1106_drawRectangle(sh1106_t *sh1106, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color);
-
-
+void SH1106_drawChar(sh1106_t * sh1106, char c, uint8_t x, uint8_t y, uint8_t color, const uint8_t* font);
+void SH1106_drawString(sh1106_t *sh1106, char* str, uint8_t x, uint8_t y, uint8_t color, const uint8_t* font);
 #endif //PI_PICO_SH1106_SH1106_I2C_H

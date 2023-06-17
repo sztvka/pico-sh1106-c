@@ -4,10 +4,11 @@
 
 
 #include "sh1106_i2c.h"
-#include "font.h"
+
 uint8_t pageBuffer[8][128];
 const uint8_t bytes_per_char = 16 * (9 / 8 + ((9 % 8) ? 1 : 0));
-
+#define FONT_HEIGHT 16
+#define FONT_WIDTH 8
 
 inline static void swap(uint8_t *a, uint8_t *b) {
     uint8_t *t=a;
@@ -103,3 +104,67 @@ void SH1106_drawRectangle(sh1106_t *sh1106, uint8_t x, uint8_t y, uint8_t width,
             SH1106_drawPixel(sh1106, x+i, y+j, color);
 
 };
+
+/*
+void SH1106_drawChar(sh1106_t *sh1106, uint8_t x, uint8_t y, uint8_t scale, const uint8_t *font, char c, uint8_t color) {
+    if(c<font[3]||c>font[4])
+        return;
+
+    uint32_t parts_per_line=(font[0]>>3)+((font[0]&7)>0);
+    for(uint8_t w=0; w<font[1]; ++w) { // width
+        uint32_t pp=(c-font[3])*font[1]*parts_per_line+w*parts_per_line+5;
+        for(uint32_t lp=0; lp<parts_per_line; ++lp) {
+            uint8_t line=font[pp];
+
+            for(int8_t j=0; j<8; ++j, line>>=1) {
+                if(line & 1)
+                    SH1106_drawRectangle(sh1106, x+w*scale, y+((lp<<3)+j)*scale, scale, scale, color);
+            }
+
+            ++pp;
+        }
+    }
+}
+
+*/
+void SH1106_drawChar(sh1106_t * sh1106, char c, uint8_t x, uint8_t y, uint8_t color, const uint8_t* font) {
+    uint8_t i,j;
+    uint32_t index;
+    if (c == ' '){
+        index = 0;
+    }
+    else if ( c < '!' || c > '~'){
+        index = 0;
+    }
+    else{
+        index = (c - 32) * 32;
+    }
+   for (i = 0; i < 2*FONT_HEIGHT; i++){
+       for(j = 0; j < FONT_WIDTH; j++){
+           if(x+8-j > sh1106->width){
+               return;
+           }
+           if(y+i/2 > sh1106->height){
+               return;
+           }
+           if (font[index+i] & (1 << j)){
+               SH1106_drawPixel(sh1106, x+8-j, y + i/2, color);
+           }
+           else{
+                SH1106_drawPixel(sh1106, x+8-j, y + i/2, !color);
+           }
+       }
+       i++;
+   }
+}
+
+void SH1106_drawString(sh1106_t *sh1106, char* str, uint8_t x, uint8_t y, uint8_t color, const uint8_t* font){
+    uint8_t i = 0;
+    while(str[i] != '\0'){
+        if(x + i*(FONT_WIDTH+1) > sh1106->width){
+            return;
+        }
+        SH1106_drawChar(sh1106, str[i], x + i*(FONT_WIDTH+1), y, color, font);
+        i++;
+    }
+}
