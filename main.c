@@ -1,5 +1,5 @@
 #include "sh1106_i2c.h"
-#include "consolas.h"
+#include "font_inconsolata.h"
 
 
 
@@ -18,7 +18,10 @@ int main() {
     setup_i2c();
     sh1106_t mydisp;
     SH1106_init(&mydisp, i2c1, 0x3C, 128, 64);
-    SH1106_drawString(&mydisp, "Hello World!", 0, 0, 1, consolas);
+    SH1106_drawString(&mydisp, "T: 20.0 ms", 0, 0, 1, inconsolata);
+    SH1106_drawString(&mydisp, "Ton: 10.0 ms", 0, 16, 1, inconsolata);
+    SH1106_drawString(&mydisp, "OFF", 0, 32, 1, inconsolata);
+    SH1106_drawString(&mydisp, "Analog", 0, 48, 0, inconsolata);
     SH1106_draw(&mydisp);
 
 

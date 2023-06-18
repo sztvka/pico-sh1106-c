@@ -137,24 +137,27 @@ void SH1106_drawChar(sh1106_t * sh1106, char c, uint8_t x, uint8_t y, uint8_t co
         index = 0;
     }
     else{
-        index = (c - 32) * 32;
+        index = (c - 32) * 16; // -32 ascii {!} * 16 = bytes per char
     }
-   for (i = 0; i < 2*FONT_HEIGHT; i++){
+   for (i = 0; i < FONT_HEIGHT; i++){
        for(j = 0; j < FONT_WIDTH; j++){
            if(x+8-j > sh1106->width){
                return;
            }
-           if(y+i/2 > sh1106->height){
+           if(y+i > sh1106->height){
                return;
            }
            if (font[index+i] & (1 << j)){
-               SH1106_drawPixel(sh1106, x+8-j, y + i/2, color);
+               SH1106_drawPixel(sh1106, x+8-j, y + i, color);
            }
            else{
-                SH1106_drawPixel(sh1106, x+8-j, y + i/2, !color);
+                SH1106_drawPixel(sh1106, x+8-j, y + i, !color);
            }
        }
-       i++;
+
+   }
+   if(color==0){
+       SH1106_drawRectangle(sh1106, x, y, (FONT_WIDTH+1), 2, 0);
    }
 }
 
@@ -165,6 +168,12 @@ void SH1106_drawString(sh1106_t *sh1106, char* str, uint8_t x, uint8_t y, uint8_
             return;
         }
         SH1106_drawChar(sh1106, str[i], x + i*(FONT_WIDTH+1), y, color, font);
+
+        if(color==0){ //fill black gaps between letters if text is inverted
+            for(uint8_t j = 2; j < (FONT_HEIGHT); j++){
+                SH1106_drawPixel(sh1106, x + i*9, y + j, 1);
+            };
+        }
         i++;
     }
 }
