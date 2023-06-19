@@ -94,7 +94,6 @@ void SH1106_clear(sh1106_t *sh1106){
             pageBuffer[i][j] = 0x00;
         }
     }
-    SH1106_draw(sh1106);
 };
 
 
